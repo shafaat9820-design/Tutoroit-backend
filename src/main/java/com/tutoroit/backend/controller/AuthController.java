@@ -74,12 +74,14 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 
 // ✅ FIX 1: Allow BOTH local + deployed frontend (CORS fix)
-@CrossOrigin(
-    origins = {
-        "http://localhost:5173",
-        "https://tutoroit-frontend.vercel.app"
-    }
-)
+// @CrossOrigin(
+//     origins = {
+//         "http://localhost:5173",
+//         "https://tutoroit-frontend.vercel.app"
+//     }
+// )
+
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     @Autowired
