@@ -46,56 +46,32 @@ import org.springframework.web.bind.annotation.*;
 
 import com.tutoroit.backend.model.Post;
 import com.tutoroit.backend.service.PostService;
-
 @RestController
 @RequestMapping("/api/posts")
-
-// ✅ FIX 1: Allow deployed + local frontend (CORS)
-@CrossOrigin(
-    origins = {
-        "http://localhost:5173",
-        "https://tutoroit-frontend.vercel.app"
-    },
-    allowedHeaders = "*",
-    methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.OPTIONS }
-)
+@CrossOrigin(origins = "*") // ✅ allow Vercel + local
 public class PostController {
 
     @Autowired
     private PostService postService;
 
-    /**
-     * ✅ CREATE POST (Tutor only)
-     * IMPORTANT:
-     * - JSON body only
-     * - No RequestParam (preflight safe)
-     */
+    // ✅ CREATE POST (FINAL FIX)
     @PostMapping
-    public ResponseEntity<?> createPost(@RequestBody Post post) {
-
-        postService.createPost(post);
-        return ResponseEntity.ok("Post created successfully");
+    public String createPost(@RequestBody Post post) {
+        // tutorEmail ab BODY se aayega
+        return postService.createPost(post, post.getTutorEmail());
     }
 
-    /**
-     * ✅ GET ALL POSTS
-     */
+    // ✅ GET ALL POSTS
     @GetMapping
-    public ResponseEntity<List<Post>> getAllPosts() {
-        return ResponseEntity.ok(postService.getAllPosts());
+    public List<Post> getAllPosts() {
+        return postService.getAllPosts();
     }
 
-    /**
-     * ✅ DELETE POST
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePost(@PathVariable Long id) {
+    // ✅ DELETE POST
+    @DeleteMapping("/delete/{id}")
+    public String deletePost(@PathVariable Long id) {
         postService.deletePostById(id);
-        return ResponseEntity.ok("Post deleted");
+        return "Post deleted";
     }
 }
 
-//         return "Post deleted";
-//     }
-
-// }
